@@ -1,0 +1,58 @@
+body {
+    background-color: #eee;
+}
+
+#container {
+    margin          : 0 auto;
+    background-color: bisque;
+    width           : 40%;
+    padding         : 10%;
+}
+
+input:not(#toggle) {
+    border   : none;
+    border   : 1px solid black;
+    height   : 40px;
+    font-size: medium;
+}
+
+
+h1,
+ul,
+input {
+    text-align: center;
+}
+
+ul {
+    margin    : 40px;
+    font-size : large;
+    text-align: left;
+}
+
+#container>input {
+    display  : block;
+    width    : 300px;
+    height   : 50px;
+    margin   : 0 auto;
+    font-size: medium;
+}
+
+#footer {
+    display         : flex;
+    margin-top      : 5%;
+    justify-content : space-between;
+    background-color: burlywood;
+}
+
+.right,
+.left {
+    display: flex;
+}
+
+.cross {
+    text-decoration: line-through;
+}
+
+.active {
+    background-color: rgb(10, 161, 116);
+}

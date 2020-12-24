@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO - backbone</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.16/backbone.localStorage-min.js" type="text/javascript"></script>  
+ 
+</head>
+<body>
+  <script type="text/template" id="template">
+    <label class=<%= complete ? 'cross' : '' %>><input id="toggle" type="checkbox"  <%= complete ? 'checked' : '' %>>   <%= title %><label>
+  </script>
+  <section id="container">
+      <h1>THINGS TO DO</h1>
+      <input type="text" id='text' placeholder="Add New">
+      <ul></ul>
+      <div id="footer">
+        <div class="left">
+          <input type="button" value="Add" id="add" class="active">
+          <input type="button" value="Search" id="search">
+          <input type="button" value="Default" id="default">
+        </div>
+        <p id="left"></p>
+        <div class="right">
+            <input type="button" value="All" id="All" class="active">
+            <input type="button" value="Active" id="Active"> 
+            <input type="button" value="Completed" id="Completed">
+        </div>
+      </div>
+      <p></p>
+  </section>
+  <script src="MainApp.js" type="module"></script>
+</body>
+</html>
