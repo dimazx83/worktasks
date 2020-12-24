@@ -16,9 +16,8 @@ import { LiView } from './LiView.js';
 class TodoMain extends Backbone.View {
     constructor(o) {
         super(o)
-        /* this.el = '#container';
-        this.chars = [];
-        this.events = { // 'событие селектор' : 'func'
+        // this.el = '#container';
+        /*this.events = { // 'событие селектор' : 'func'
             // ищет селектор в el
             // keydown :
             'keydown': 'enter',
@@ -32,7 +31,9 @@ class TodoMain extends Backbone.View {
         this.chars = [];
     }
 
-    get el() { return '#container' }
+    get el() {
+        return '#container'
+    }
 
     events() {
         return {
@@ -47,17 +48,15 @@ class TodoMain extends Backbone.View {
     }
 
     initialize() {
-        console.log(coll)
         this.listenTo(coll, 'add', this.addOne);
         coll.fetch();
         if (localStorage.length === 0) {
-            this.default();
+            this.default()
         }
     }
 
     render(e) { // создание html отображения
         this.$el.find('ul').empty(); // очищаем ul
-        console.log(e)
         e.models.forEach(i => this.addOne(i));
         return this
     }
@@ -66,7 +65,6 @@ class TodoMain extends Backbone.View {
         localStorage.clear();
         coll.reset();
         this.$el.find('ul').empty();
-        console.log(coll);
         ['Learn Javascript', 'Learn React', 'Build a React App'].forEach(i => {
             coll.create({ title: i })
         });
@@ -87,7 +85,7 @@ class TodoMain extends Backbone.View {
         }
     }
 
-    enter(e) { // вызов каждый раз приз клике буквы - плохо
+    enter(e) {
         if (this.$el.find('#add').hasClass('active')) { // добавлять ток если активен add input
             if (e.keyCode === 13) {
                 let txt = this.$el.find('#text');
@@ -103,7 +101,6 @@ class TodoMain extends Backbone.View {
                 let collFiltered = new TodoC(filteredCollection.filtered(this.chars.join('')));
                 this.chars.length === 0 ? this.render(filteredCollection) : this.render(collFiltered);
             } else if (e.key.length === 1) {
-               // console.log(this.chars)
                 this.chars.push(e.key);
                 let collFiltered = new TodoC(filteredCollection.filtered(this.chars.join('')));
                 this.render(collFiltered);
@@ -112,7 +109,6 @@ class TodoMain extends Backbone.View {
     }
 
     addOne(mod) {
-        console.log(mod)
         let list = new LiView({ model: mod }); // передаём экз модели / list.model доступ к метод/свва модели
         list.el.style.listStyle = 'none';
         this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)

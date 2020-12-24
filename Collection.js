@@ -1,7 +1,7 @@
-import {TodoModel} from './Model.js';
+import { TodoModel } from './Model.js';
 
 export class TodoC extends Backbone.Collection {
-    constructor(o){
+    constructor(o) {
         super(o)
         this.model = TodoModel; // ссылка на класс модели
         this.localStorage = new Backbone.LocalStorage('todo');

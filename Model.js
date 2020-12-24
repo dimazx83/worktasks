@@ -18,13 +18,10 @@ export const TodoModel = Backbone.Model.extend({
 })
 
 
-/*
-export class TodoModel extends Backbone.Model {
+
+/*export class TodoModel extends Backbone.Model {
     constructor() {
         super();
-        //   console.log(this)
-        
-
     }
  defaults() {
         return {
