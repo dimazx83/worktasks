@@ -27,6 +27,7 @@ ul {
     margin    : 40px;
     font-size : large;
     text-align: left;
+    list-style: none;
 }
 
 #container>input {

@@ -1,14 +1,22 @@
-export class LiView extends Backbone.View {
+export class ListItemView extends Backbone.View {
     constructor(o) {
 
         super(o);
 
-        this.tagName = 'li'; // создаём
-        this.id = 'list';
+     //   this.tagName = 'li'; // создаём
+    //    this.id = 'list';
         /*this.events = {
             'click #toggle': 'toggle',
         };*/
         this.templ = _.template($('#template').html());
+    }
+
+    get tagName(){
+        return 'li'
+    }
+
+    get id(){
+        return 'list'
     }
 
     events() {
@@ -18,6 +26,7 @@ export class LiView extends Backbone.View {
     }
 
     initialize() {
+
         this.model.on('change', this.render, this);
     }
 
@@ -28,6 +37,7 @@ export class LiView extends Backbone.View {
 
     toggle() {
         this.model.toggle();
+      //  this.model.save()
         if (Array.from([$('#Active'), $('#Completed')]).some(i => i.hasClass('active'))) setTimeout(() => this.$el.hide(), 100);
     }
 };

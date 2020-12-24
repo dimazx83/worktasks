@@ -1,10 +1,12 @@
-import { TodoModel } from './Model.js';
+import { MainModel } from './MainModel.js';
+import { TodoMainCollection } from './Collection.js';
 
-export class TodoMainCollection extends Backbone.Collection {
+
+export class FilteredCollection extends Backbone.Collection {
     constructor(o) {
         super(o)
-        this.model = TodoModel; // ссылка на класс модели
-        this.localStorage = new Backbone.LocalStorage('todo');
+        this.model = MainModel; // ссылка на класс модели
+        // this.localStorage = new Backbone.LocalStorage('todo');
     }
 
     all() {
