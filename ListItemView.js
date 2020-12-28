@@ -1,6 +1,5 @@
 export class ListItemView extends Backbone.View {
     constructor(o) {
-
         super(o);
 
      //   this.tagName = 'li'; // создаём
@@ -8,6 +7,7 @@ export class ListItemView extends Backbone.View {
         /*this.events = {
             'click #toggle': 'toggle',
         };*/
+
         this.templ = _.template($('#template').html());
     }
 
@@ -26,7 +26,6 @@ export class ListItemView extends Backbone.View {
     }
 
     initialize() {
-
         this.model.on('change', this.render, this);
     }
 
@@ -38,6 +37,6 @@ export class ListItemView extends Backbone.View {
     toggle() {
         this.model.toggle();
       //  this.model.save()
-        if (Array.from([$('#Active'), $('#Completed')]).some(i => i.hasClass('active'))) setTimeout(() => this.$el.hide(), 100);
+        if (Array.from([$('#Active'), $('#Completed')]).some(i => i.hasClass('active'))) setTimeout(() => this.$el.hide(), 100); // исправить
     }
 };

@@ -1,7 +1,7 @@
 import { TodoMainCollection } from './Collection.js';
 import { ListItemView } from './ListItemView.js';
 import { FooterView } from './FooterView.js';
-import { ButtonCollection } from './ButtonCollection.js';
+import { MainModel } from './MainModel.js';
 
 const coll = new TodoMainCollection();
 
@@ -18,8 +18,7 @@ const coll = new TodoMainCollection();
 class TodoMain extends Backbone.View {
     constructor(o) {
         super(o)
-        this.chars = [];
-        //  this.templ = _.template($('#templateFooter').html());
+        this.chars = [];//
     }
 
     get el() {
@@ -39,96 +38,17 @@ class TodoMain extends Backbone.View {
     }
 
     initialize() {
-        this.collect = new ButtonCollection()
-
-        this.collect.add([{ id: 'Add', mod: true, side: 'left' }, { id: 'Search', side: 'left' }, { id: 'All', mod: true }, { id: 'Active' }, { id: 'Completed' }])
-        // let filteredCollection = new ButtonCollection()
         this.listenTo(coll, 'add', this.addOne);
 
-
-
-        /* this.collect= new ButtonCollection()
-         this.collect.add([{ id: 'Add', mod: 'active' },{ id: 'Search' },{ id: 'All', mod: 'active' },{ id: 'Active' },{ id: 'Completed' }])
-         console.log(this.collect)*/
-
-        /* this.footer = new FooterView(
-             { model: new MainModel({ id: 'Add', mod: 'active' }) }
-         );*/
-
         this.footer = new FooterView(
-            { collection: this.collect }
+            { model: new MainModel() }
         );
 
-
-        /* new FooterView({ model: new MainModel({ id: 'Search' }) })
-         new FooterView({ model: new MainModel({ id: 'All', mod: 'active' }) })
-         new FooterView({ model: new MainModel({ id: 'Active' }) })
-         new FooterView({ model: new MainModel({ id: 'Completed' }) })*/
-
-
-        /*
-        let model = new MainModel( { id: 'Add', mod: 'active' })
-        
-                this.footer = new FooterView({
-                    model:
-                        model
-                });*/
-
-        // this.footer = new FooterView();
-        /*,
-
-        new FooterView({model:new MainModel(
-            { id: 'Add', mod: 'active' }
-        )});
-            { id: 'Search' },
-            { id: 'Default' },
-            { id: 'All', mod: 'active' },
-            { id: 'Active' },
-            { id: 'Completed' },*/
-
+        this.listenTo(this.footer.model, 'change:idMod', (e) => { // меняем инпут
+            e.get('idMod') === 'Add' ? this.$el.find('#text').attr("placeholder", "Add New") : this.$el.find('#text').attr("placeholder", "Search");
+        })
 
         this.$el.append(this.footer.render().el);
-
-        /* filteredCollection.add([
-             { id: 'Add', mod: 'active' },
-             { id: 'Search' },
-             { id: 'Default' },
-             { id: 'All', mod: 'active' },
-             { id: 'Active' },
-             { id: 'Completed' },
-         ]);*/
-       // console.log(this.collect.where({ side: 'left' }))
-
-      /*  this.listenTo(this.collect.where({side:'left'})[0], 'change:mod', function (changedModel) { // or in collection: this.listenTo(this, change, call)
-            console.log(4)
-            if (changedModel.get('side') == 'left') {
-                if (!this.collect.slice(0, 2).some(i => i.get('mod'))) {
-                    //  this.$el.find('#text').hide();
-                    //  this.$el.find('#text').toggle()
-                } else
-                    this.$el.find('#text').attr("placeholder", `${changedModel.get('id') == 'Add' ? 'Add New' : 'Search'}`);
-            } else {
-
-            }
-
-
-            // console.log(this.collect.some(i => i.get('mod')))
-        })*/
-
-        /*  this.collect.where({ side: 'left' }).on('change:mod', function () { // or in collection: this.listenTo(this, change, call)
-              console.log('left');
-             // console.log(this.collect.some(i => i.get('mod')))
-          })*/
-
-
-         this.listenTo(this.collect, 'change:mod', _.debounce(function (a, b) {
-
-                console.log(4)
- 
-           
-         }, 100))
-
-        //this.listenTo(filteredCollection, 'add', 'modChange')
 
         coll.fetch();
         if (localStorage.length === 0) {
@@ -157,8 +77,7 @@ class TodoMain extends Backbone.View {
         });
     }
 
-
-    getData(e) {
+    /*getData(e) {
         Array.from([$('#All'), $('#Active'), $('#Completed')]).forEach(i => i.toggleClass('active', false));
         e.target.classList.add('active');
         this.$el.find('#text').removeAttr("value");
@@ -171,16 +90,16 @@ class TodoMain extends Backbone.View {
             let collComp = new TodoMainCollection(coll.complete());
             this.render(collComp);
         }
-    }
+    }*/
 
     enter(e) {
-        if (this.$el.find('#Add').hasClass('active')) { // добавлять ток если активен add input
+        if(this.footer.model.get('idMod') == 'Add'){ // добавлять ток если активен add input
             if (e.keyCode === 13) {
                 let txt = this.$el.find('#text');
-                coll.create({ title: txt.val() });
+                coll.create({ title: txt.val()});
                 txt.val((i, val) => val = ''); // очищаем ввод
             }
-        } else if (this.$el.find('#Search').hasClass('active')) { // если активирован поиск
+        } else if (this.footer.model.get('idMod') == 'Search') { // если активирован поиск
             let activeFilter = Array.from([$('#All'), $('#Active'), $('#Completed')]).find(i => i.hasClass('active'))[0].id;
             let filteredCollection = activeFilter === 'All' ? coll : activeFilter === 'Active' ? new TodoMainCollection(coll.remain()) : new TodoMainCollection(coll.complete());
 
@@ -201,28 +120,6 @@ class TodoMain extends Backbone.View {
         this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)
         // list : list of views
     }
-
-    focus(e) {
-        if (e.target.classList.contains('active')) {
-            e.target.classList.remove('active');
-            this.$el.find('#text').hide();
-        } else {
-            if (this.$el.find('#Search').hasClass('active') && e.target.id === 'add') {
-                if (this.$el.find('#Active').hasClass('active')) {
-                    let collRemain = new TodoMainCollection(coll.remain());
-                    this.render(collRemain);
-                } else if (this.$el.find('#Completed').hasClass('active')) {
-                    let collComp = new TodoMainCollection(coll.complete());
-                    this.render(collComp);
-                } else this.render(coll)
-            }
-            this.$el.find('#text').removeAttr("value");
-            Array.from([$('#Add'), $('#Search')]).forEach(i => i.toggleClass('active', false));
-            e.target.classList.toggle('active');
-            this.$el.find('#text').show(); // добавить проверку на существов
-            e.target.id === 'Add' ? this.$el.find('#text').attr("placeholder", "Add New") : this.$el.find('#text').attr("placeholder", "Search");
-        }
-    }
 }
 
-let TodoMainEx = new TodoMain();
+new TodoMain();

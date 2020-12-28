@@ -5,15 +5,12 @@ export class MainModel extends Backbone.Model {
 
     get defaults() {
         return {
-            id: '',
-            side: '',
-            mod: false
+            idMod: 'Add',
+            mod: true, // убрать?
+            idBehaviour: 'All',
+          //  behaviour: true,
+            keyword: ''
         };
-    }
-
-    initialize() {
-      //  this.listenTo()
-        // console.log('Создан новый пункт');
     }
 
     toggle() {
