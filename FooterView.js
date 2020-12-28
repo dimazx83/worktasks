@@ -1,4 +1,4 @@
-import { FilteredCollection } from './filteredCollection.js';
+import { ButtonCollection } from './ButtonCollection.js';
 
 export class FooterView extends Backbone.View {
     constructor(o) {
@@ -7,10 +7,10 @@ export class FooterView extends Backbone.View {
         //  this.tagName = 'div';
         // this.id = 'footer';
         //this.templ = _.template($('#templateFooter').html());
-        
+
     }
 
-    get templ(){
+    get templ() {
         return _.template($('#templateFooter').html());
     }
 
@@ -24,48 +24,92 @@ export class FooterView extends Backbone.View {
 
     events() {
         return {
-            /*  'click #Add': 'state',
-              'click #Search': 'state',
-              'click #Default': '',
-              'click #All': 'itemsFiltration',
-              'click #Active': 'itemsFiltration',
-              'click #Completed': 'itemsFiltration',*/
+            'click #Add': 'state',
+            'click #Search': 'state',
+            'click #Default': '',
+            'click #All': 'state',
+            'click #Active': 'state',
+            'click #Completed': 'state'
+            /* 'click #All': 'itemsFiltration',
+             'click #Active': 'itemsFiltration',
+             'click #Completed': 'itemsFiltration',*/
         }
     }
 
     initialize() {
-        this.collect = new FilteredCollection()
-
-        
-       
-        
-        this.collect.add([{ id: 'Add', mod: 'active', side: 'left' }, { id: 'Search', side: 'left' }, { id: 'All', mod: 'active' }, { id: 'Active' }, { id: 'Completed' }])
-        console.log(this.collect)
-       // console.log(this.collect)
-        this.listenTo(this.model, 'change', this.render)
-        // this.state()
-        // console.log(this.model)
-        //  console.log(this.model.get('id'))
-       // this.model.set('mod', !this.model.get('mod'))
-        //console.log(this.model)
-        //   this.model.on('change', this.render, this);
-      //  this.render()
+        console.log(this)
+        this.listenTo(this.collection, 'change', this.render)
     }
 
     render() { // заполняет el
-        console.log(this.model)
-        this.$el.html(this.templ(this.model.toJSON()));
+
+        console.log(this)
+
+        this.$el.html(this.templ(this.collection.models[0].toJSON()));
+
+        this.collection.models.forEach(i => {
+            if (i.get('mod')) { 
+
+                this.$el.find(`div > #${i.get('id')}`).addClass('active')
+
+            } // else this.$el.find(`div > #${i.get('id')}`).removeClass('active')
+        })
+
+        // this.$el.html(this.templ(this.model.toJSON()));
+
+        /*  let list = new ListItemView({ model: mod }); // передаём экз модели / list.model доступ к метод/свва модели
+         this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)
+         // list : list of views */
+
+        //  this.$el.html(this.templ(this.collection.models[0].toJSON()));
+        // this.$el.html(this.templ(this.collection.models[1].toJSON()));
         return this
     }
 
     state(e) {
-        let arr = this.collect.where({ id: e })[0];
+       
+     /*
+        if( this.model.rge === e.target.id){
+            this.model.mode = null;
+        } else {
+            this.model.mode = e.target.id
+        }*/
+
+
+        let arr = this.collection.where({ id: e.target.id })[0];
+
 
         if (arr.get('side') != '') { // если левые кнопки
-            this.collect.slice(0, 2).forEach(i => i.toggle());
-        } else if (arr.get('mod') != true) { // запрет на нажатие по активированной правой кнопке
-            this.collect.slice(-3).forEach(i => i.toggle());
+
+            if (arr.get('mod')) { // клик по активной кнопке
+                this.collection.slice(0, 2).forEach(i => i.set('mod', '')) // дважды рендер?
+
+            } else if (this.collection.slice(0, 2).some(i => i.get('mod'))) { // хоть одна кнопка on
+                this.collection.slice(0, 2).forEach(i => i.toggle());
+
+            } else arr.set('mod', true) // если все кнопки off   // а тут не дважды
+
+        } else if (!arr.get('mod')) { // запрет на нажатие по активированной правой кнопке
+            this.collection.slice(-3).forEach(i => i.set('mod', ''));
+            arr.toggle();
+
+            /* 
+            this.$el.find('#text').removeAttr("value");
+        if (e.target.id === 'All') {
+            this.render(coll);
+        } else if (e.target.id === 'Active') { // новые экз коллекции?
+            let collRemain = new TodoMainCollection(coll.remain());
+            this.render(collRemain);
+        } else {
+            let collComp = new TodoMainCollection(coll.complete());
+            this.render(collComp);
         }
+         */
+
+        }
+        e.stopPropagation();
+        
+
 
     }
 

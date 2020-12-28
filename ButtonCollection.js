@@ -2,7 +2,7 @@ import { MainModel } from './MainModel.js';
 import { TodoMainCollection } from './Collection.js';
 
 
-export class FilteredCollection extends Backbone.Collection {
+export class ButtonCollection extends Backbone.Collection {
     constructor(o) {
         super(o)
         this.model = MainModel; // ссылка на класс модели

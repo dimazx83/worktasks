@@ -1,9 +1,7 @@
 import { TodoMainCollection } from './Collection.js';
 import { ListItemView } from './ListItemView.js';
-
-import { MainModel } from './MainModel.js'
 import { FooterView } from './FooterView.js';
-import { FilteredCollection } from './filteredCollection.js';
+import { ButtonCollection } from './ButtonCollection.js';
 
 const coll = new TodoMainCollection();
 
@@ -41,17 +39,27 @@ class TodoMain extends Backbone.View {
     }
 
     initialize() {
-        // let filteredCollection = new FilteredCollection()
-        this.listenTo(coll, 'add', this.addOne);
-        //  this.listenTo(this.models, 'change', console.log(4))
+        this.collect = new ButtonCollection()
 
-        /* this.collect= new FilteredCollection()
+        this.collect.add([{ id: 'Add', mod: true, side: 'left' }, { id: 'Search', side: 'left' }, { id: 'All', mod: true }, { id: 'Active' }, { id: 'Completed' }])
+        // let filteredCollection = new ButtonCollection()
+        this.listenTo(coll, 'add', this.addOne);
+
+
+
+        /* this.collect= new ButtonCollection()
          this.collect.add([{ id: 'Add', mod: 'active' },{ id: 'Search' },{ id: 'All', mod: 'active' },{ id: 'Active' },{ id: 'Completed' }])
          console.log(this.collect)*/
 
+        /* this.footer = new FooterView(
+             { model: new MainModel({ id: 'Add', mod: 'active' }) }
+         );*/
+
         this.footer = new FooterView(
-            { model: new MainModel({ id: 'Add', mod: 'active' }) }
+            { collection: this.collect }
         );
+
+
         /* new FooterView({ model: new MainModel({ id: 'Search' }) })
          new FooterView({ model: new MainModel({ id: 'All', mod: 'active' }) })
          new FooterView({ model: new MainModel({ id: 'Active' }) })
@@ -89,8 +97,36 @@ class TodoMain extends Backbone.View {
              { id: 'Active' },
              { id: 'Completed' },
          ]);*/
+       // console.log(this.collect.where({ side: 'left' }))
 
-        //  console.log(filteredCollection) 
+      /*  this.listenTo(this.collect.where({side:'left'})[0], 'change:mod', function (changedModel) { // or in collection: this.listenTo(this, change, call)
+            console.log(4)
+            if (changedModel.get('side') == 'left') {
+                if (!this.collect.slice(0, 2).some(i => i.get('mod'))) {
+                    //  this.$el.find('#text').hide();
+                    //  this.$el.find('#text').toggle()
+                } else
+                    this.$el.find('#text').attr("placeholder", `${changedModel.get('id') == 'Add' ? 'Add New' : 'Search'}`);
+            } else {
+
+            }
+
+
+            // console.log(this.collect.some(i => i.get('mod')))
+        })*/
+
+        /*  this.collect.where({ side: 'left' }).on('change:mod', function () { // or in collection: this.listenTo(this, change, call)
+              console.log('left');
+             // console.log(this.collect.some(i => i.get('mod')))
+          })*/
+
+
+         this.listenTo(this.collect, 'change:mod', _.debounce(function (a, b) {
+
+                console.log(4)
+ 
+           
+         }, 100))
 
         //this.listenTo(filteredCollection, 'add', 'modChange')
 
@@ -109,7 +145,7 @@ class TodoMain extends Backbone.View {
     }
 
     click(e) {
-        this.footer.state(e.target.id)
+        this.footer.state(e)
     }
 
     default() {
