@@ -101,11 +101,9 @@ class TodoMain extends Backbone.View {
 
     addOne(model) {
         if (model.isValid()) {
-            if (this.footer.model.get('idBehaviour') != 'Completed') { // не добавляем view если активен фильтр completed
                 let list = new ListItemView({ model: model }); // передаём экз модели / list.model доступ к метод/свва модели
                 this.ViewList.push(list)
                 this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)
-            }
         } else {
             model.destroy()
             console.log('Пункт удалён')
