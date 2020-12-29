@@ -12,6 +12,8 @@ export class TodoModel extends Backbone.Model {
 
     initialize() {
         console.log('Создан новый пункт');
+        this.on('invalid', (model, error) => alert(error));
+        //this.destroy();
     }
 
     validate(attr) {

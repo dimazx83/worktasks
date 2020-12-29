@@ -17,12 +17,8 @@ export class FooterView extends Backbone.View {
 
     events() {
         return {
-            'click #Add': 'state',
-            'click #Search': 'state',
+            'click #Add, #Search, #All, #Active, #Completed': 'state',
             'click #Default': '',
-            'click #All': 'state',
-            'click #Active': 'state',
-            'click #Completed': 'state'
             /* 
              'click #All': 'itemsFiltration',
              'click #Active': 'itemsFiltration',
@@ -34,59 +30,43 @@ export class FooterView extends Backbone.View {
     initialize() {
         this.$el.html(this.templ(this.model.toJSON())); // поменять/убрать
         this.listenTo(this.model, 'change', _.debounce(() => this.render(), 100))
+      //  this.listenTo(this.model, 'change:idBehaviour', _.debounce(() => this.filtration(this.model.get('idBehaviour')), 100))
     }
 
     render() { // заполняет el
         if (this.model.get('idMod') == 'Add' || this.model.get('idMod') == 'Search') { // рендер левых кнопок
             this.$el.find(`div:first-child > input:not(last-child)`).removeClass('active') // всё очищаем
-            this.$el.find(`div > #${this.model.get('idMod')}`).addClass('active')
 
-            /*  } else{
-                 console.log(this.model.get('mod')) */
-
-            this.model.get('mod') ? this.$el.find(`div > #${this.model.get('idMod')}`).addClass('active') : this.$el.find(`div > #${this.model.get('idMod')}`).removeClass('active')
+            if (this.model.get('mod')) { // если что-то уже включено
+                this.$el.find(`div > #${this.model.get('idMod')}`).addClass('active')
+            } else {
+                this.$el.find(`div > #${this.model.get('idMod')}`).removeClass('active')
+            }
         }
         if (this.model.get('idBehaviour')) { // рендер правых кнопок
             this.$el.find(`div:last-child > input`).removeClass('active')
             this.$el.find(`div > #${this.model.get('idBehaviour')}`).addClass('active')
-            //  this.model.get('behaviour') ? this.$el.find(`div > #${this.model.get('idBehaviour')}`).addClass('active') : this.$el.find(`div > #${this.model.get('idBehaviour')}`).removeClass('active')
         }
-
         return this
     }
 
     state(e) {
-        //console.log(this.model.get('mod')) // не изменно / убрать?
-        if (e.target.id == 'Add' || e.target.id == 'Search') {
-            if (this.model.get('idMod') === e.target.id) {
-                // this.model.set('idMod', '');
+       
+        if (e.target.id == 'Add' || e.target.id == 'Search') { // модель левых кнопок
+
+            if (this.model.get('idMod') === e.target.id) { // повторный клик
                 this.model.toggle()
-            } else this.model.set('idMod', e.target.id)
-        } else {
-            this.model.set('idBehaviour', e.target.id)
-        }
+            } else { // клик по новой кнопке + проверка активны ли кнопки
+                this.model.set('idMod', e.target.id)
+                this.model.set('mod', true)
+            }
 
-        /* 
-        this.$el.find('#text').removeAttr("value");
-    if (e.target.id === 'All') {
-        this.render(coll);
-    } else if (e.target.id === 'Active') { // новые экз коллекции?
-        let collRemain = new TodoMainCollection(coll.remain());
-        this.render(collRemain);
-    } else {
-        let collComp = new TodoMainCollection(coll.complete());
-        this.render(collComp);
-    }
-     
- 
-    }*/
+        } else this.model.set('idBehaviour', e.target.id) // модель правых
+
         e.stopPropagation();
-
     }
 
-    itemsFiltration() {
-
-    };
+    
 }
 
 

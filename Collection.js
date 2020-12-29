@@ -7,16 +7,8 @@ export class TodoMainCollection extends Backbone.Collection {
         this.localStorage = new Backbone.LocalStorage('todo');
     }
 
-    all() {
-        return this
-    }
-
-    complete() {
-        return this.where({ complete: true }) //this.filter((mod=>return mod.get('complete') === true))
-    }
-
-    remain() {
-        return this.where({ complete: false })
+    filtrationType(id) {
+       return id == 'All' ? this.models : this.where({ complete: id == 'Active' ? false : true}) // выбор фильтрации
     }
 
     filtered(str) {

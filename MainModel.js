@@ -1,15 +1,15 @@
 export class MainModel extends Backbone.Model {
     constructor(parametrs) {
         super(parametrs);
+       
     }
 
     get defaults() {
         return {
             idMod: 'Add',
-            mod: true, // убрать?
+            mod: true,
             idBehaviour: 'All',
-          //  behaviour: true,
-            keyword: ''
+            keyword: []
         };
     }
 

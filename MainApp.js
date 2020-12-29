@@ -18,7 +18,6 @@ const coll = new TodoMainCollection();
 class TodoMain extends Backbone.View {
     constructor(o) {
         super(o)
-        this.chars = [];//
     }
 
     get el() {
@@ -28,12 +27,8 @@ class TodoMain extends Backbone.View {
     events() {
         return {
             'keydown': 'enter',
-            'click #Add': 'click',
-            'click #Search': 'click',
+            //'click #Add, #Search, #All, #Active, #Completed': 'click',
             'click #default': 'default',
-            'click #All': 'click',
-            'click #Active': 'click',
-            'click #Completed': 'click'
         }
     }
 
@@ -43,81 +38,83 @@ class TodoMain extends Backbone.View {
         this.footer = new FooterView(
             { model: new MainModel() }
         );
+        
+        this.listenTo(this.footer.model, 'change', (e) => { // состояния инпута + фильтрация
+            if (e.get('mod')) {
+                this.$el.find('#text').show()
+                this.$el.find('#text').attr("placeholder", `${e.get('idMod') === 'Add' ? 'Add New' : 'Search'}`)
 
-        this.listenTo(this.footer.model, 'change:idMod', (e) => { // меняем инпут
-            e.get('idMod') === 'Add' ? this.$el.find('#text').attr("placeholder", "Add New") : this.$el.find('#text').attr("placeholder", "Search");
+                this.render(this.filtration(this.footer.model.get('idBehaviour'))) // фильтруем
+            } else this.$el.find('#text').hide()
         })
-
-        this.$el.append(this.footer.render().el);
+      
 
         coll.fetch();
-        if (localStorage.length === 0) {
+        //console.log(coll)
+
+        this.$el.append(this.footer.render().el); // вставляем футер
+
+        
+       /* if (localStorage.length === 0) {
             this.default()
-        }
+        }*/
     }
 
     render(e) { // создание html отображения
         this.$el.find('ul').empty(); // очищаем ul
+
         e.models.forEach(i => this.addOne(i));
-        //  console.log(e)
+      
         //  e.models.forEach(i => i.save())
         return this
     }
 
-    click(e) {
-        this.footer.state(e)
-    }
-
     default() {
-        localStorage.clear();
+       localStorage.clear();
         coll.reset();
+      //  console.log(coll)
         this.$el.find('ul').empty();
         ['Learn Javascript', 'Learn React', 'Build a React App'].forEach(i => {
             coll.create({ title: i })
         });
     }
 
-    /*getData(e) {
-        Array.from([$('#All'), $('#Active'), $('#Completed')]).forEach(i => i.toggleClass('active', false));
-        e.target.classList.add('active');
-        this.$el.find('#text').removeAttr("value");
-        if (e.target.id === 'All') {
-            this.render(coll);
-        } else if (e.target.id === 'Active') { // новые экз коллекции?
-            let collRemain = new TodoMainCollection(coll.remain());
-            this.render(collRemain);
-        } else {
-            let collComp = new TodoMainCollection(coll.complete());
-            this.render(collComp);
-        }
-    }*/
+    filtration(id) {
+        return new TodoMainCollection(coll.filtrationType(id));
+    }
 
     enter(e) {
-        if(this.footer.model.get('idMod') == 'Add'){ // добавлять ток если активен add input
+        if (this.footer.model.get('idMod') == 'Add') { // добавлять ток если активен add input
             if (e.keyCode === 13) {
                 let txt = this.$el.find('#text');
-                coll.create({ title: txt.val()});
+                coll.create({ title: txt.val() });
                 txt.val((i, val) => val = ''); // очищаем ввод
             }
         } else if (this.footer.model.get('idMod') == 'Search') { // если активирован поиск
-            let activeFilter = Array.from([$('#All'), $('#Active'), $('#Completed')]).find(i => i.hasClass('active'))[0].id;
-            let filteredCollection = activeFilter === 'All' ? coll : activeFilter === 'Active' ? new TodoMainCollection(coll.remain()) : new TodoMainCollection(coll.complete());
+            let filteredCollection = this.filtration(this.footer.model.get('idBehaviour'))
 
             if (e.keyCode === 8) { // click backspace
-                this.chars.pop();
-                let collFiltered = new TodoMainCollection(filteredCollection.filtered(this.chars.join('')));
-                this.chars.length === 0 ? this.render(filteredCollection) : this.render(collFiltered);
+            
+              this.footer.model.get('keyword').pop();
+                let collFiltered = new TodoMainCollection(filteredCollection.filtered(this.footer.model.get('keyword').join('')));
+                this.footer.model.get('keyword').length === 0 ? this.render(filteredCollection) : this.render(collFiltered);
             } else if (e.key.length === 1) {
-                this.chars.push(e.key);
-                let collFiltered = new TodoMainCollection(filteredCollection.filtered(this.chars.join('')));
+                this.footer.model.get('keyword').push(e.key);
+                let collFiltered = new TodoMainCollection(filteredCollection.filtered(this.footer.model.get('keyword').join('')));
                 this.render(collFiltered);
             }
         }
     }
 
     addOne(mod) {
-        let list = new ListItemView({ model: mod }); // передаём экз модели / list.model доступ к метод/свва модели
-        this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)
+       
+            let list = new ListItemView({ model: mod }); // передаём экз модели / list.model доступ к метод/свва модели
+            this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)
+        
+      //  mod.save()
+    // console.log (mod.validate(mod.get('title')))
+     // coll.models.forEach(i => i.save())
+      
         // list : list of views
     }
 }

@@ -29,7 +29,9 @@ export class ListItemView extends Backbone.View {
         this.model.on('change', this.render, this);
     }
 
-    render() { // заполняет el
+    render() {
+        //this.model.save()
+       // this.remove()
         this.$el.html(this.templ(this.model.toJSON()));
         return this
     }
@@ -37,6 +39,6 @@ export class ListItemView extends Backbone.View {
     toggle() {
         this.model.toggle();
       //  this.model.save()
-        if (Array.from([$('#Active'), $('#Completed')]).some(i => i.hasClass('active'))) setTimeout(() => this.$el.hide(), 100); // исправить
+        if (Array.from([$('#Active'), $('#Completed')]).some(i => i.hasClass('active'))) setTimeout(() => this.$el.hide(), 100);
     }
 };
