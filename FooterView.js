@@ -19,18 +19,12 @@ export class FooterView extends Backbone.View {
         return {
             'click #Add, #Search, #All, #Active, #Completed': 'state',
             'click #Default': '',
-            /* 
-             'click #All': 'itemsFiltration',
-             'click #Active': 'itemsFiltration',
-             'click #Completed': 'itemsFiltration',
-            */
         }
     }
 
     initialize() {
-        this.$el.html(this.templ(this.model.toJSON())); // поменять/убрать
+        this.$el.html(this.templ(this.model.toJSON()));
         this.listenTo(this.model, 'change', _.debounce(() => this.render(), 100))
-      //  this.listenTo(this.model, 'change:idBehaviour', _.debounce(() => this.filtration(this.model.get('idBehaviour')), 100))
     }
 
     render() { // заполняет el
@@ -51,7 +45,7 @@ export class FooterView extends Backbone.View {
     }
 
     state(e) {
-       
+        
         if (e.target.id == 'Add' || e.target.id == 'Search') { // модель левых кнопок
 
             if (this.model.get('idMod') === e.target.id) { // повторный клик
@@ -66,7 +60,6 @@ export class FooterView extends Backbone.View {
         e.stopPropagation();
     }
 
-    
 }
 
 

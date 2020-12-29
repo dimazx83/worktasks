@@ -1,6 +1,7 @@
 export class TodoModel extends Backbone.Model {
     constructor(parametrs) {
         super(parametrs);
+        this.localStorage = new Backbone.LocalStorage('todo');
     }
 
     get defaults() {
@@ -12,16 +13,15 @@ export class TodoModel extends Backbone.Model {
 
     initialize() {
         console.log('Создан новый пункт');
-        this.on('invalid', (model, error) => alert(error));
-        //this.destroy();
+        this.once('invalid', (model, error) => alert(error));
     }
 
     validate(attr) {
-        if (attr.title == ''.trim()) return 'Write smth!'
+        if (attr.title.trim() == '') return 'Write smth!'
     }
 
     toggle() {
         this.set('complete', !this.get('complete'))
-        //this.save()
     }
 }
+  
