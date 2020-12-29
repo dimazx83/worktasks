@@ -48,9 +48,13 @@ class TodoMain extends Backbone.View {
 
                 this.render(this.filtration(this.footer.model.get('idBehaviour'))) // фильтруем
             } else this.$el.find('#text').hide()
-        })
+        });
 
-        itemsCollection.fetch();
+        itemsCollection.fetch().then(e => {
+            if (!e.length) { // если ничего не сохранено в хранилище, то выводим дефолтные значения
+                this.default()
+            }
+        })
         this.$el.append(this.footer.render().el); // вставляем футер
     }
 
@@ -79,7 +83,7 @@ class TodoMain extends Backbone.View {
 
         if (this.footer.model.get('idMod') == 'Add') { // добавлять ток если активен add input
             if (e.keyCode === 13) {
-                let txt = this.$el.find('#text');
+                let txt = this.$el.find('#text'); // {add: false}
                 itemsCollection.create({ title: txt.val() });
                 txt.val((i, val) => val = ''); // очищаем ввод
             }
@@ -101,9 +105,9 @@ class TodoMain extends Backbone.View {
 
     addOne(model) {
         if (model.isValid()) {
-                let list = new ListItemView({ model: model }); // передаём экз модели / list.model доступ к метод/свва модели
-                this.ViewList.push(list)
-                this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)
+            let list = new ListItemView({ model: model }); // передаём экз модели / list.model доступ к метод/свва модели
+            this.ViewList.push(list)
+            this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)
         } else {
             model.destroy()
             console.log('Пункт удалён')
