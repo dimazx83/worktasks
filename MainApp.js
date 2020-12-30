@@ -36,7 +36,6 @@ class TodoMain extends Backbone.View {
         this.ViewList = [];
         this.listenTo(itemsCollection, 'add', this.addOne);
 
-
         this.footer = new FooterView(
             { model: new MainModel() }
         );
@@ -59,9 +58,10 @@ class TodoMain extends Backbone.View {
     }
 
 
-    render(filteredWithKeywordCollection) { // создание html отображения
+    render(collectionFilteredWithKeyword) { // создание html отображения
+        //this.$el.find('ul').remove()
         this.$el.find('ul').empty(); // очищаем ul
-        filteredWithKeywordCollection.models.forEach(i => this.addOne(i));
+        collectionFilteredWithKeyword.models.forEach(i => this.addOne(i));
         return this
     }
 
@@ -72,9 +72,10 @@ class TodoMain extends Backbone.View {
         ['Learn Javascript', 'Learn React', 'Build a React App'].forEach(i => {
             itemsCollection.create({ title: i })
         });
+        
     }
 
-    filtration(id) {
+    filtration(id) { // фильтрации по разному типу
         return new TodoMainCollection(itemsCollection.filtrationType(id));
     }
 
@@ -93,19 +94,19 @@ class TodoMain extends Backbone.View {
             if (e.keyCode === 8) { // click backspace
 
                 this.footer.model.get('keyword').pop();
-                let filteredWithKeywordCollection = new TodoMainCollection(filteredCollection.filtered(this.footer.model.get('keyword').join('')));
-                this.footer.model.get('keyword').length === 0 ? this.render(filteredCollection) : this.render(filteredWithKeywordCollection);
+                let collectionFilteredWithKeyword = new TodoMainCollection(filteredCollection.filtered(this.footer.model.get('keyword').join('')));
+                this.footer.model.get('keyword').length === 0 ? this.render(filteredCollection) : this.render(collectionFilteredWithKeyword);
             } else if (e.key.length === 1) {
                 this.footer.model.get('keyword').push(e.key);
-                let filteredWithKeywordCollection = new TodoMainCollection(filteredCollection.filtered(this.footer.model.get('keyword').join('')));
-                this.render(filteredWithKeywordCollection);
+                let collectionFilteredWithKeyword = new TodoMainCollection(filteredCollection.filtered(this.footer.model.get('keyword').join('')));
+                this.render(collectionFilteredWithKeyword);
             }
         }
     }
 
     addOne(model) {
         if (model.isValid()) {
-            let list = new ListItemView({ model: model }); // передаём экз модели / list.model доступ к метод/свва модели
+            let list = new ListItemView({ model: model });
             this.ViewList.push(list)
             this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)
         } else {
