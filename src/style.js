@@ -1,4 +1,11 @@
 export const style = {
+    root: {
+        margin: '0 auto',
+        backgroundColor: 'bisque',
+        width: '40%',
+        padding: '10%'
+    },
+
     center: {
         textAlign: 'center'
     },
@@ -12,6 +19,7 @@ export const style = {
 
     // :not(#toggle)
     input: {
+        textAlign: 'center',
         border: 'none',
         border: '1px solid black',
         height: '40px',

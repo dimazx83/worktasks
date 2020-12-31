@@ -1,10 +1,9 @@
 import React from "react"
-import {style} from './style.js';
-
+import {style} from '../style.js'
 const { flex, footer } = style
 
-export const FooterElem = () => (
-    <div id='footer' style={footer}>
+export const Footer = () => (
+    <footer id='footer' style={footer}>
         <div id='left' style={flex}>
             <input type="button" value="Add" id="Add" />
             <input type="button" value="Search" id="Search" />
@@ -15,5 +14,5 @@ export const FooterElem = () => (
             <input type="button" value="Active" id="Active" />
             <input type="button" value="Completed" id="Completed" />
         </div>
-    </div>
+    </footer>
 )
