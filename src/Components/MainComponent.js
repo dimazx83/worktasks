@@ -1,4 +1,4 @@
-import React from "react"
+import React, {Component} from "react"
 import { Header } from "./Header.js"
 import { List } from "./List.js"
 import { Footer } from './Footer.js'

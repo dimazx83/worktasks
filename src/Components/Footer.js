@@ -1,5 +1,5 @@
 import React from "react"
-import {style} from '../style.js'
+import { style } from '../style.js'
 const { flex, footer } = style
 
 export const Footer = () => (

@@ -19,7 +19,7 @@ export const style = {
 
     // :not(#toggle)
     input: {
-        textAlign: 'center',
+      //  textAlign: 'center',
         border: 'none',
         border: '1px solid black',
         height: '40px',
@@ -27,6 +27,7 @@ export const style = {
     },
 
     textinput: {
+        textAlign: 'center',
         display: 'block',
         width: '300px',
         height: '50px',
