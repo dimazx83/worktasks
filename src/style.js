@@ -17,9 +17,24 @@ export const style = {
         listStyle: 'none'
     },
 
+    cross(bool) {
+        if (bool) return { textDecoration: 'line-through' }
+        else return { textDecoration: 'none' }
+    },
+
+    bgColor(clickedElement, activatedElement) {
+        if (clickedElement === activatedElement) return { backgroundColor: 'green', border: '1px solid black', color: '#f7f7f7' }
+        else return { backgroundColor: 'rgb(239, 239, 239)', border: '1px solid black', color: 'black' }
+    },
+
+    display(mode) {
+
+        if (mode == 'none') return { display: 'none' }
+    },
+
     // :not(#toggle)
     input: {
-      //  textAlign: 'center',
+        //  textAlign: 'center',
         border: 'none',
         border: '1px solid black',
         height: '40px',

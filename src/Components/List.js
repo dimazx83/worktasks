@@ -1,60 +1,39 @@
-import React, { Component } from "react"
+import React, {Component} from "react"
 import { style } from '../style.js'
 import { makeAutoObservable } from "mobx"
 import { observer } from "mobx-react"
 import { makeObservable, observable, computed, action } from "mobx"
+import { Item } from './Item.js'
+import {ItemsCollection} from '../Collections/ItemsCollection.js'
 const { ul, input } = style;
 
-const itemsData = [];
-['Build a React App', 'Learn React', 'Learn Javascript'].forEach((i) => itemsData.push({ title: i, complete: false }))
+/*export default (() => ({
+  get: () => JSON.parse(localStorage.getItem('todos')),
+  set: (todos) => { localStorage.setItem('todos', JSON.stringify(todos)) }
+}))()*/
 
 
-function getCompletedItems() {
-    return listItems.filter(item => console.log(item.completed)) // или Item data
-}
+// @flow
+let x: number = 'k'
 
-function getRemainItems() {
-    return listItems.filter(item => console.log(!item.completed))
-}
-
-function addItem() {
-    listItems.push({ title, id = title.toString(), complete })
-}
-
-function toggle() {
-    this.setState(prevState => {
-        return {
-            count: prevState.count + 1
-        }
-    })
-} // state в компоненте li
-
-//className +=
-//class= { state? cross: '' }
+const itemsCollection = new ItemsCollection()
 
 /*
 const Greetings = ({ firstName, lastName }) => <div>Hey you! {firstName} {lastName}!</div>;
 render() {
     const { firstNameError, firstName } = this.state;
-
     const date = new Date()
-        {date.getHours() % 12}*/
-
-const Item = (props) => {
-    <li key={props.item.title}>
-        <label>
-            <input id="toggle" type="checkbox" checked={props.item.complete} onChange={toggle} />
-            <p>{props.item.title}</p>
-        </label>
-    </li>
+        {date.getHours() % 12}
+*/
+@observer
+export class List extends React.Component {
+    render() {
+        const listItems = itemsCollection.items.map(i => <Item key={i.title} item={i} toggle={itemsCollection.toggle} />)
+        return (
+            <ul style={ul}>
+                {listItems}
+            </ul>
+        )
+    }
 }
 
-const listItems = itemsData.map((i) => {
-    return <Item item={i} />
-})
-
-export const List = () => (
-    <ul style={ul}>
-        {listItems}
-    </ul>
-)
