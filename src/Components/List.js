@@ -1,39 +1,42 @@
-import React, {Component} from "react"
-import { style } from '../style.js'
-import { makeAutoObservable } from "mobx"
-import { observer } from "mobx-react"
-import { makeObservable, observable, computed, action } from "mobx"
+import { observable, action,computed } from "mobx";
+import { observer } from "mobx-react";
+import * as React from "react";
+import { render } from "react-dom";import { style } from '../style.js'
+
 import { Item } from './Item.js'
-import {ItemsCollection} from '../Collections/ItemsCollection.js'
 const { ul, input } = style;
 
 /*export default (() => ({
   get: () => JSON.parse(localStorage.getItem('todos')),
   set: (todos) => { localStorage.setItem('todos', JSON.stringify(todos)) }
 }))()*/
-
-
 // @flow
-let x: number = 'k'
-
-const itemsCollection = new ItemsCollection()
-
-/*
+//let x: number = 'k'
+/* destruct
 const Greetings = ({ firstName, lastName }) => <div>Hey you! {firstName} {lastName}!</div>;
-render() {
-    const { firstNameError, firstName } = this.state;
-    const date = new Date()
-        {date.getHours() % 12}
+const { firstNameError, firstName } = this.state;
+const date = new Date() {date.getHours() % 12}
 */
-@observer
+
+
 export class List extends React.Component {
+
+    // условный рендер по актив кнопке
     render() {
-        const listItems = itemsCollection.items.map(i => <Item key={i.title} item={i} toggle={itemsCollection.toggle} />)
+        let collection = []
+        let activeFilter = this.props.mainStore.footerStore.state.activeBehaviour
+
+        if (activeFilter == 'All') collection = this.props.mainStore.itemsStore.items
+        else if (activeFilter == 'Active') collection = this.props.mainStore.itemsStore.RemainItems()
+        else collection = this.props.mainStore.itemsStore.CompletedItems()
+
         return (
             <ul style={ul}>
-                {listItems}
+                {collection.map(i => <Item key={i.title} item={i} />)}
             </ul>
         )
     }
 }
+
+
 

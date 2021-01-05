@@ -1,34 +1,39 @@
-import React, { Component } from "react"
-import { makeAutoObservable } from "mobx"
-import { observer } from "mobx-react"
-import { makeObservable, observable, computed, action } from "mobx"
+import { observable, action,computed } from "mobx";
+import { observer } from "mobx-react";
+import * as React from "react";
+import { render } from "react-dom";
 import { style } from '../style.js'
 
 const { cross } = style;
-/*
+
 @observer
 export class Item extends React.Component {
-    
-    render() {
+    toggle() {
+        const item = this.props.item
+        item.complete = !item.complete
+        console.log(item)
+    }
 
+    render() {
+        const item = this.props.item
+        console.log(item)
         return (
-            <li style = {cross(this.props.item.complete) }>
+            <li style={cross(item.complete)}>
                 <label>
-                    <input id="toggle" type="checkbox" checked={this.props.item.complete} onChange={() => this.props.toggle(this.props.item.title)} />
-                    {this.props.item.title}
+                    <input id="toggle" type="checkbox" checked={item.complete} onClick={() => this.toggle()} />
+                    {item.title}
                 </label>
             </li>
         )
     }
 }
-*/
 
-export const Item = observer(({item})=>
-
-<li style = {cross(item.complete) }>
-                <label>
-                    <input id="toggle" type="checkbox" checked={item.complete} onChange={() => item.complete = !this.item.complete} /> {/* вызываем родит метод тогл */}
-                    {item.title}
-                </label>
-            </li>
-) 
+/*
+export const Item = observer(({ item }) =>
+    <li style={cross(item.complete)}>
+        <label>
+            <input id="toggle" type="checkbox" checked={item.complete} onClick={() => item.complete = !item.complete} />
+            {item.title}
+        </label>
+    </li>
+)*/
