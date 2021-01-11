@@ -6,13 +6,8 @@ export class MainModel extends Backbone.Model {
     get defaults() {
         return {
             idMod: 'Add',
-            mod: true,
             idBehaviour: 'All',
-            keyword: []
+            keyword: ''
         };
-    }
-
-    toggle() {
-        this.set('mod', !this.get('mod'))
     }
 }

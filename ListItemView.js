@@ -1,14 +1,14 @@
 export class ListItemView extends Backbone.View {
-    constructor(o) {
-        super(o);
-     this.templ = _.template($('#template').html());
+    constructor(parameters) {
+        super(parameters);
+        this.templ = _.template($('#template').html());
     }
 
-    get tagName(){
+    get tagName() {
         return 'li'
     }
 
-    get id(){
+    get id() {
         return 'list'
     }
 
@@ -18,19 +18,28 @@ export class ListItemView extends Backbone.View {
         }
     }
 
-    initialize() {
+    initialize(options) {
+        this.options = options;
         this.model.on('change', this.render, this);
     }
 
     render() {
-        this.model.save()
         this.$el.html(this.templ(this.model.toJSON()));
         return this
     }
 
     toggle() {
-        this.model.toggle();
-        if (Array.from([$('#Active'), $('#Completed')]).some(i => i.hasClass('active'))) setTimeout(() => this.$el.hide(), 100);
-    }
+        if (this.options.footer !== 'All') {
+            if (this.$el.data('activated')) return false;
+            this.$el.data('activated', true);
 
+            setTimeout(() => {
+                this.$el.hide();
+                this.$el.data('activated', false); // активируется через 500, до этого true
+            }, 500);
+        }
+
+        this.model.toggle();
+        this.model.save();
+    }
 };

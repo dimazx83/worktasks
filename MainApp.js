@@ -5,19 +5,9 @@ import { MainModel } from './MainModel.js';
 
 const itemsCollection = new TodoMainCollection();
 
-/* 
- itemsCollection.add(экз модели) [ex1, ex2]
- .remove(экз) 
- .reset(экз) удаляет всё и встав новое
- .at(0)
- .toJSON() массив всех экз
- .each(callb(model, index, list) => index + model.get('str'))
-*/
-
-
 class TodoMain extends Backbone.View {
-    constructor(o) {
-        super(o)
+    constructor(parameters) {
+        super(parameters)
     }
 
     get el() {
@@ -26,88 +16,97 @@ class TodoMain extends Backbone.View {
 
     events() {
         return {
-            'keydown': 'enter',
-            'click #Add, #Search, #All, #Active, #Completed': () => this.ViewList.forEach(i => i.remove()),
-            'click #default': 'default',
+            'keydown': 'clickKey',
+            'click #default': 'setDefaultTodos',
         }
     }
 
     initialize() {
         this.ViewList = [];
-        this.listenTo(itemsCollection, 'add', this.addOne);
-
         this.footer = new FooterView(
             { model: new MainModel() }
         );
 
-        this.listenTo(this.footer.model, 'change', (e) => { // состояния инпута + фильтрация
-            if (e.get('mod')) {
-                this.$el.find('#text').show()
-                this.$el.find('#text').attr("placeholder", `${e.get('idMod') === 'Add' ? 'Add New' : 'Search'}`)
-
-                this.render(this.filtration(this.footer.model.get('idBehaviour'))) // фильтруем
-            } else this.$el.find('#text').hide()
-        });
+        this.listenTo(itemsCollection, 'add', this.addOne);
+        this.listenTo(this.footer.model, 'change', this.changeTodoInputView);
 
         itemsCollection.fetch().then(e => {
             if (!e.length) { // если ничего не сохранено в хранилище, то выводим дефолтные значения
-                this.default()
+                this.setDefaultTodos();
             }
-        })
+        });
+
         this.$el.append(this.footer.render().el); // вставляем футер
     }
 
 
-    render(collectionFilteredWithKeyword) { // создание html отображения
-        //this.$el.find('ul').remove()
-        this.$el.find('ul').empty(); // очищаем ul
-        collectionFilteredWithKeyword.models.forEach(i => this.addOne(i));
+    render() { // создание html отображения
         return this
     }
 
-    default() {
+    changeTodoInputView() {
+        if (this.footer.model.get('idMod') === 'None') {
+            this.$el.find('#text').hide();
+        }
+        else {
+            this.$el.find('#text').show();
+            this.$el.find('#text').attr("placeholder", `${this.footer.model.get('idMod') === 'Add' ? 'Add New' : 'Search'}`);
+        }
+        this.createListItemsViews(this.getFiltratedCollection(this.footer.model.get('idBehaviour'))); // фильтруем 
+    }
+
+    setDefaultTodos() {
         localStorage.clear();
         itemsCollection.reset();
-        this.$el.find('ul').empty();
+
+        this.footer.model.set('idMod', 'Add')
+        this.footer.model.set('idBehaviour', 'All')
+
+        this.ViewList.forEach(i => i.remove());
+        this.ViewList = [];
+
         ['Learn Javascript', 'Learn React', 'Build a React App'].forEach(i => {
             itemsCollection.create({ title: i })
         });
-        
     }
 
-    filtration(id) { // фильтрации по разному типу
-        return new TodoMainCollection(itemsCollection.filtrationType(id));
+    getFiltratedCollection(id) { // фильтрации по разному типу
+        return new TodoMainCollection(itemsCollection.getFiltratedCollection(id));
     }
 
-    enter(e) {
-        if (e.keyCode === 27) this.footer.model.set('mod', false) // убрать инпут при esc
+    clickKey(e) {
+        if (e.keyCode === 27) this.footer.model.set('idMod', 'None') // убрать инпут при esc
 
-        if (this.footer.model.get('idMod') == 'Add') { // добавлять ток если активен add input
-            if (e.keyCode === 13) {
-                let txt = this.$el.find('#text'); // {add: false}
+        if (this.footer.model.get('idMod') == 'Add' && this.footer.model.get('idBehaviour') !== 'Completed') { // добавлять ток если активен add input
+            if (e.keyCode === 13) { // click enter
+                let txt = this.$el.find('#text');
                 itemsCollection.create({ title: txt.val() });
                 txt.val((i, val) => val = ''); // очищаем ввод
             }
         } else if (this.footer.model.get('idMod') == 'Search') { // если активирован поиск
-            let filteredCollection = this.filtration(this.footer.model.get('idBehaviour'))
-
-            if (e.keyCode === 8) { // click backspace
-
-                this.footer.model.get('keyword').pop();
-                let collectionFilteredWithKeyword = new TodoMainCollection(filteredCollection.filtered(this.footer.model.get('keyword').join('')));
-                this.footer.model.get('keyword').length === 0 ? this.render(filteredCollection) : this.render(collectionFilteredWithKeyword);
-            } else if (e.key.length === 1) {
-                this.footer.model.get('keyword').push(e.key);
-                let collectionFilteredWithKeyword = new TodoMainCollection(filteredCollection.filtered(this.footer.model.get('keyword').join('')));
-                this.render(collectionFilteredWithKeyword);
+            if (e.key.length === 1 || e.keyCode === 8) {
+                setTimeout(() => {
+                    let filteredCollection = this.getFiltratedCollection(this.footer.model.get('idBehaviour'))
+                    this.footer.model.set('keyword', this.$el.find('#text').val())
+                    let collectionFilteredWithKeyword = new TodoMainCollection(filteredCollection.getCollectionFilteredWithKeyword(this.footer.model.get('keyword')))
+                    if (this.footer.model.get('keyword').length === 0) {
+                        this.createListItemsViews(filteredCollection)
+                    } else this.createListItemsViews(collectionFilteredWithKeyword);
+                }, 0)
             }
         }
     }
 
+    createListItemsViews(collectionFilteredWithKeyword) {
+        this.ViewList.forEach(i => i.remove());
+        this.ViewList = [];
+        collectionFilteredWithKeyword.models.forEach(i => this.addOne(i));
+    }
+
     addOne(model) {
         if (model.isValid()) {
-            let list = new ListItemView({ model: model });
-            this.ViewList.push(list)
+            let list = new ListItemView({ model: model, footer: this.footer.model.get('idBehaviour') });
+            this.ViewList.push(list);
             this.$el.find('ul').prepend(list.render().el); // render : this.$el.html(this.template(this.model.toJSON())) - в скобках: html код (инпут + текст)
         } else {
             model.destroy()

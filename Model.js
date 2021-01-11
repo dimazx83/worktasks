@@ -24,4 +24,3 @@ export class TodoModel extends Backbone.Model {
         this.set('complete', !this.get('complete'))
     }
 }
-  
