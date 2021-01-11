@@ -13,7 +13,6 @@ export class TodoMainCollection extends Backbone.Collection {
     }
 
     getCollectionFilteredWithKeyword(str) {
-        let filteredTitles = this.pluck('title').filter(i => i.toLowerCase().startsWith(str.toLowerCase()));
-        return filteredTitles.reduce((acc, i) => { return [this.where({ title: i }), ...acc] }, []).flat()
+        return this.models.filter(i => i.get('title').toLowerCase().startsWith(str.toLowerCase()))
     }
 }

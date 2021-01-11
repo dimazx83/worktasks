@@ -36,7 +36,12 @@ export class FooterView extends Backbone.View {
     changeButtonsColor() {
         this.$el.find(`div:first-child > input:not(last-child)`).toggleClass('active', false) // всё очищаем
 
+        
+
         if (this.model.get('idMod') === 'None') {
+
+           // toggle(this.model.get('idMod'))
+
             this.$el.find(`div > #${this.model.get('idMod')}`).toggleClass('active', false)
         } else {
             this.$el.find(`div > #${this.model.get('idMod')}`).toggleClass('active', true)

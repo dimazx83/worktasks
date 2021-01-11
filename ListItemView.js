@@ -35,6 +35,8 @@ export class ListItemView extends Backbone.View {
             };
             this.$el.data('activated', true);
 
+         //  надо успеть отменить свой мисклик
+
             setTimeout(() => {
                 this.$el.hide();
                 this.$el.data('activated', false); // активируется через 100, до этого true
