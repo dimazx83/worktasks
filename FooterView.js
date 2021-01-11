@@ -17,8 +17,8 @@ export class FooterView extends Backbone.View {
 
     events() {
         return {
-            'click #Add, #Search': 'leftState',
-            'click #All, #Active, #Completed': 'rightState',
+            'click #Add, #Search': 'changeLeftState',
+            'click #All, #Active, #Completed': 'changeRightState',
             'click #Default': '',
         }
     }
@@ -46,7 +46,7 @@ export class FooterView extends Backbone.View {
         this.$el.find(`div > #${this.model.get('idBehaviour')}`).toggleClass('active', true)
     }
 
-    leftState(e) {
+    changeLeftState(e) {
         if (this.model.get('idMod') === e.target.id) { // повторный клик
             this.model.set('idMod', 'None')
         } else { // клик по новой кнопке + проверка активны ли кнопки
@@ -55,7 +55,7 @@ export class FooterView extends Backbone.View {
         e.stopPropagation();
     }
 
-    rightState(e) {
+    changeRightState(e) {
         this.model.set('idBehaviour', e.target.id)
         e.stopPropagation();
     }
