@@ -9,12 +9,12 @@ export type object = {
 
 export class ItemsStore {
   items: Array<object> = [];
-  store: Function = (): ?Array<object> => global.localStorage.getItem('key');
+ // store: Function = (): ?Array<object> => global.localStorage.getItem('key');
   // ???
 
   constructor() {
     makeAutoObservable(this);
-    this.setDefault(JSON.parse(this.store));
+    this.setDefault(JSON.parse(localStorage.getItem('key')));
   }
 
   getCompletedItems(): Array<object> {
