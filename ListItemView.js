@@ -30,17 +30,11 @@ export class ListItemView extends Backbone.View {
 
     toggle() {
         if (this.options.footer !== 'All') {
-            if (this.$el.data('activated')) {
-                return false
-            };
-            this.$el.data('activated', true);
-
          //  надо успеть отменить свой мисклик
 
             setTimeout(() => {
-                this.$el.hide();
-                this.$el.data('activated', false); // активируется через 100, до этого true
-            }, 100);
+                this.$el.toggle();
+            }, 500);
         }
 
         this.model.toggle();

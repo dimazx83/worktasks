@@ -35,25 +35,14 @@ export class FooterView extends Backbone.View {
 
     changeButtonsColor() {
         this.$el.find(`div:first-child > input:not(last-child)`).toggleClass('active', false) // всё очищаем
-
-        
-
-        if (this.model.get('idMod') === 'None') {
-
-           // toggle(this.model.get('idMod'))
-
-            this.$el.find(`div > #${this.model.get('idMod')}`).toggleClass('active', false)
-        } else {
-            this.$el.find(`div > #${this.model.get('idMod')}`).toggleClass('active', true)
-        }
-
+        this.$el.find(`div > #${this.model.get('idMod')}`).toggleClass('active', this.model.get('idMod') !== false)
         this.$el.find(`div:last-child > input`).toggleClass('active', false)
         this.$el.find(`div > #${this.model.get('idBehaviour')}`).toggleClass('active', true)
     }
 
     changeLeftState(e) {
         if (this.model.get('idMod') === e.target.id) { // повторный клик
-            this.model.set('idMod', 'None')
+            this.model.set('idMod', false)
         } else { // клик по новой кнопке + проверка активны ли кнопки
             this.model.set('idMod', e.target.id)
         }

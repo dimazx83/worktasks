@@ -16,7 +16,7 @@ class TodoMain extends Backbone.View {
 
     events() {
         return {
-            'keydown': 'clickKey',
+            'keyup': 'clickKey',
             'click #default': 'setDefaultTodos',
         }
     }
@@ -29,7 +29,6 @@ class TodoMain extends Backbone.View {
 
         this.listenTo(itemsCollection, 'add', this.addOne);
         this.listenTo(this.footer.model, 'change', this.changeTodoInputView);
-        this.listenTo(this.footer.model, 'change:keyword', this.filtrateByKeyword);
 
         itemsCollection.fetch().then(e => {
             if (!e.length) { // если ничего не сохранено в хранилище, то выводим дефолтные значения
@@ -40,44 +39,27 @@ class TodoMain extends Backbone.View {
         this.$el.append(this.footer.render().el); // вставляем футер
     }
 
-
     render() { // создание html отображения
         return this
     }
 
     changeTodoInputView() {
-        if (this.footer.model.get('idMod') === 'None') {
+        if (this.footer.model.get('idMod') === false) {
             this.$el.find('#text').hide();
         }
         else {
             this.$el.find('#text').show();
             this.$el.find('#text').attr("placeholder", `${this.footer.model.get('idMod') === 'Add' ? 'Add New' : 'Search'}`);
+            this.filtrationByKeywordAndBehaviour()
         }
-        this.createListItemsViews(this.getFiltratedCollection(this.footer.model.get('idBehaviour'))); // фильтруем 
-
-        // метод clickKey
-
     }
 
-    filtrateByKeyword() {
-        //  if (e.keyCode === 27) this.footer.model.set('idMod', 'None') // убрать инпут при esc
-
-        if (this.footer.model.get('idMod') == 'Add' && this.footer.model.get('idBehaviour') !== 'Completed') { // добавлять ток если активен add input
-
-        } else if (this.footer.model.get('idMod') == 'Search') { // если активирован поиск
-            // if (e.key.length === 1 || e.keyCode === 8) {
-            // убрать (мб keypress)
-            setTimeout(() => {
-                let filteredCollection = this.getFiltratedCollection(this.footer.model.get('idBehaviour'))
-                let collectionFilteredWithKeyword = new TodoMainCollection(filteredCollection.getCollectionFilteredWithKeyword(this.footer.model.get('keyword')))
-                if (this.footer.model.get('keyword').length === 0) {
-                    this.createListItemsViews(filteredCollection)
-                } else {
-                    this.createListItemsViews(collectionFilteredWithKeyword)
-                }
-            }, 0)
-            //}
+    filtrationByKeywordAndBehaviour() {
+        let filteredCollection = this.getFiltratedCollection(this.footer.model.get('idBehaviour')) // фильтрация на основе активного фильтра
+        if (this.footer.model.get('idMod') == 'Search') { // если активирован поиск
+            filteredCollection = new TodoMainCollection(filteredCollection.getCollectionFilteredWithKeyword(this.footer.model.get('keyword')))
         }
+        this.createListItemsViews(filteredCollection)
     }
 
     setDefaultTodos() {
@@ -100,40 +82,15 @@ class TodoMain extends Backbone.View {
     }
 
     clickKey(e) {
-        if (e.keyCode === 27) this.footer.model.set('idMod', 'None') // убрать инпут при esc
-        /*
-                if (this.footer.model.get('idMod') == 'Add' && this.footer.model.get('idBehaviour') !== 'Completed') { // добавлять ток если активен add input
-                    if (e.keyCode === 13) { // click enter
-                        let txt = this.$el.find('#text');
-                        itemsCollection.create({ title: txt.val() });
-                        txt.val((i, val) => val = ''); // очищаем ввод
-                    }
-                } else if (this.footer.model.get('idMod') == 'Search') { // если активирован поиск
-                    if (e.key.length === 1 || e.keyCode === 8) {
-                        // убрать (мб keypress)
-                        setTimeout(() => {
-                            let filteredCollection = this.getFiltratedCollection(this.footer.model.get('idBehaviour'))
-        
-                            // оставить ток это:
-                            this.footer.model.set('keyword', this.$el.find('#text').val())
-                            
-                            let collectionFilteredWithKeyword = new TodoMainCollection(filteredCollection.getCollectionFilteredWithKeyword(this.footer.model.get('keyword')))
-                            if (this.footer.model.get('keyword').length === 0) {
-                                this.createListItemsViews(filteredCollection)
-                            } else this.createListItemsViews(collectionFilteredWithKeyword);
-                        }, 0)
-                    }
-                }*/
+        if (e.keyCode === 27) this.footer.model.set('idMod', false) // убрать инпут при esc
 
-        if (e.keyCode === 13) { // click enter
-            let txt = this.$el.find('#text');
+        this.footer.model.set('keyword', this.$el.find('#text').val())
+
+        if (e.keyCode === 13 && this.footer.model.get('idMod') === 'Add' && this.footer.model.get('idBehaviour') !== 'Completed') { // click enter
             itemsCollection.create({ title: this.footer.model.get('keyword') });
-            txt.val((i, val) => val = ''); // очищаем ввод
+            this.$el.find('#text').val((i, val) => val = ''); // очищаем ввод
+            this.footer.model.set('keyword', '');
         }
-        //else {
-        setTimeout(() => this.footer.model.set('keyword', this.$el.find('#text').val()), 0)
-        //  }
-
     }
 
     createListItemsViews(collectionFilteredWithKeyword) {
