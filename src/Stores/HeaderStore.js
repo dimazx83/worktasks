@@ -1,48 +1,49 @@
-import { makeObservable, observable, computed, action } from "mobx"
+import { observable, action, makeAutoObservable } from "mobx";
 
 export class HeaderStore {
-    @observable state = {
-        keyword: '',
-        mode: 'add'
-    }
+  constructor() {
+    makeAutoObservable(this);
+  }
 
-    enter = (e) => {
-        
-        switch (e.key) {
-            case 'Enter':
-                console.log('enter')
-                //console.log(this.state.keyword)
-                
-                this.addItem(this.state.keyword)
-                break;
-            case "Esc":
-            case "Escape":
-                console.log('esc')
-                this.state.mode = 'none'
-                break;
-            case "Backspace":
-                this.state.keyword = this.state.keyword.slice(0, -1);
-                break;
-            case "Shift":
-                break;
-            case "Control":
-                break;
-            default:
-                this.state.keyword += e.key
-        }
-    }
+  state = {
+    keyword: "",
+    mode: "add"
+  };
 
-  /*  updateKeyword = (e) => {
-        this.state.keyword = e.target.value
-    }*/
-
-    addItem(title) {
-        if (!this.validate(title)) return false
-       // else this.state.keyword = title
-       console.log(title)
+  enter(e, itemsStore, footerStoreMode) {
+    // передаём store каждый раз ?
+    switch (e.key) {
+      case "Enter":
+        if (footerStoreMode === "Add")
+          this.addItem(this.state.keyword, itemsStore);
+        break;
+      case "Esc":
+      case "Escape":
+        this.state.mode = "none";
+        break;
+      case "Backspace":
+        this.state.keyword = this.state.keyword.slice(0, -1);
+        break;
+      case "Shift":
+      case "Control":
+      case "Delete":
+        break;
+      default:
+        this.state.keyword += e.key;
     }
+  }
 
-     validate(str) {
-        return !str.trim() == ''
+  addItem(title, itemsStore) {
+    if (!this.validate(title)) {
+      this.state.keyword = "";
+      return false;
+    } else {
+      itemsStore.addItem(title);
+      this.state.keyword = "";
     }
+  }
+
+  validate(str) {
+    return !str.trim() == "";
+  }
 }

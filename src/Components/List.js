@@ -1,42 +1,46 @@
-import { observable, action,computed } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { render } from "react-dom";import { style } from '../style.js'
+import { style } from "../style.js";
+import { Item } from "./Item.js";
 
-import { Item } from './Item.js'
-const { ul, input } = style;
+const { ul } = style;
 
-/*export default (() => ({
-  get: () => JSON.parse(localStorage.getItem('todos')),
-  set: (todos) => { localStorage.setItem('todos', JSON.stringify(todos)) }
-}))()*/
 // @flow
 //let x: number = 'k'
-/* destruct
-const Greetings = ({ firstName, lastName }) => <div>Hey you! {firstName} {lastName}!</div>;
-const { firstNameError, firstName } = this.state;
-const date = new Date() {date.getHours() % 12}
-*/
 
-
+@observer
 export class List extends React.Component {
+  // условный рендер по актив кнопке
+  render() {
+    let collection = [];
+    let activeMode = this.props.mainStore.footerStore.state.activeMode;
+    let activeFilter = this.props.mainStore.footerStore.state.activeBehaviour;
+    let keyword = this.props.mainStore.headerStore.state.keyword;
 
-    // условный рендер по актив кнопке
-    render() {
-        let collection = []
-        let activeFilter = this.props.mainStore.footerStore.state.activeBehaviour
+    if (activeFilter === "All")
+      collection = this.props.mainStore.itemsStore.items;
+    else if (activeFilter === "Active")
+      collection = this.props.mainStore.itemsStore.getRemainItems();
+    else collection = this.props.mainStore.itemsStore.getCompletedItems();
 
-        if (activeFilter == 'All') collection = this.props.mainStore.itemsStore.items
-        else if (activeFilter == 'Active') collection = this.props.mainStore.itemsStore.RemainItems()
-        else collection = this.props.mainStore.itemsStore.CompletedItems()
-
-        return (
-            <ul style={ul}>
-                {collection.map(i => <Item key={i.title} item={i} />)}
-            </ul>
-        )
+    if (activeMode === "Search") {
+      collection = this.props.mainStore.itemsStore.filtration(
+        keyword,
+        collection
+      );
     }
+
+    localStorage.setItem(
+      "todos",
+      JSON.stringify(this.props.mainStore.itemsStore.items)
+    );
+
+    return (
+      <ul style={ul}>
+        {collection.map((i) => (
+          <Item key={i.title} item={i} />
+        ))}
+      </ul>
+    );
+  }
 }
-
-
-

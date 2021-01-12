@@ -1,24 +1,37 @@
-import { observable, action,computed } from "mobx";
-import { observer } from "mobx-react";
-import * as React from "react";
-import { render } from "react-dom";
+import { observable, action, makeAutoObservable } from "mobx";
 
 export class ItemsStore {
-    @observable items = [
-        { title: 'Build a React App', complete: false },
-        { title: 'Learn React', complete: false },
-        { title: 'Learn Javascript', complete: false }
-    ]
+  items = [];
 
-    @computed get CompletedItems() {
-       return this.items.filter(item => item.complete)
-    }
+  constructor() {
+    makeAutoObservable(this);
+    this.setDefault(JSON.parse(localStorage.getItem("todos")));
+  }
 
-    @computed get RemainItems() {
-        return this.items.filter(item => !item.complete)
-    }
+  getCompletedItems() {
+    return this.items.filter((item) => item.complete);
+  }
 
-    @action addItem(title) {
-        this.items.push({ title: title, complete: false })
-    }
+  getRemainItems() {
+    return this.items.filter((item) => !item.complete);
+  }
+
+  filtration(word, filteredCollection) {
+    return filteredCollection.filter((todo) => {
+      return todo.title.toLowerCase().startsWith(word.toLowerCase());
+    });
+  }
+
+  setDefault(list) {
+    this.items = list || [
+      // если ничего не передано то дефолт список
+      { title: "Build a React App", complete: false },
+      { title: "Learn React", complete: false },
+      { title: "Learn Javascript", complete: false }
+    ];
+  }
+
+  addItem(title) {
+    this.items.unshift({ title: title, complete: false });
+  }
 }

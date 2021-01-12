@@ -1,16 +1,21 @@
-import { makeObservable, observable, computed, action } from "mobx"
+import { observable, action, makeAutoObservable } from "mobx";
 
 export class FooterStore {
-    @observable state = {
-        activeMode: 'Add',
-        activeBehaviour: 'All'
-    }
+  constructor() {
+    makeAutoObservable(this);
+  }
 
-    @action changeMode = (id) => {
-        this.state.activeMode = id
-    }
+  state = {
+    activeMode: "Add",
+    activeBehaviour: "All"
+  };
 
-    @action changeBehaviour = (id) => {
-        this.state.activeBehaviour = id
-    }
+  changeMode(id) {
+    if (this.mode.state.activeMode === id) this.mode.state.activeMode = "none";
+    else this.mode.state.activeMode = id;
+  }
+
+  changeBehaviour(id) {
+    this.behaviour.state.activeBehaviour = id;
+  }
 }
