@@ -2,6 +2,7 @@ export class ListItemView extends Backbone.View {
     constructor(parameters) {
         super(parameters);
         this.templ = _.template($('#template').html());
+        this.timer = 0;
     }
 
     get tagName() {
@@ -30,13 +31,16 @@ export class ListItemView extends Backbone.View {
 
     toggle() {
         if (this.options.footer !== 'All') {
-         //  надо успеть отменить свой мисклик
-
-            setTimeout(() => {
-                this.$el.toggle();
-            }, 500);
+            if (this.timer === 0) {
+                this.timer = setTimeout(() => {
+                    this.$el.hide();
+                }, 500);
+            }
+            else {
+                clearTimeout(this.timer);
+                this.timer = 0
+            }
         }
-
         this.model.toggle();
         this.model.save();
     }

@@ -56,7 +56,7 @@ class TodoMain extends Backbone.View {
 
     filtrationByKeywordAndBehaviour() {
         let filteredCollection = this.getFiltratedCollection(this.footer.model.get('idBehaviour')) // фильтрация на основе активного фильтра
-        if (this.footer.model.get('idMod') == 'Search') { // если активирован поиск
+        if (this.footer.model.get('idMod') === 'Search') { // если активирован поиск, добавить поиск по фильтру
             filteredCollection = new TodoMainCollection(filteredCollection.getCollectionFilteredWithKeyword(this.footer.model.get('keyword')))
         }
         this.createListItemsViews(filteredCollection)
