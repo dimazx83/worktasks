@@ -34,7 +34,7 @@ export class ListItemView extends Backbone.View {
             if (this.timer === 0) {
                 this.timer = setTimeout(() => {
                     this.$el.hide();
-                }, 500);
+                }, 100);
             }
             else {
                 clearTimeout(this.timer);
