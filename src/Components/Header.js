@@ -1,14 +1,20 @@
-import React from "react";
+//@flow
+
+import * as React from 'react'
 import { style } from "../style.js";
 import { observer } from "mobx-react";
 const { center, textinput, display } = style;
 
+type Props = { // дубль
+  mainStore: any,
+};
+
 @observer
-export class Header extends React.Component {
-  render() {
-    const headerStore = this.props.mainStore.headerStore;
-    const footerStoreMode = this.props.mainStore.footerStore.state.activeMode;
-    let placeholder = footerStoreMode == "Add" ? "Add New Item" : "Search";
+export class Header extends React.Component<Props> {
+  render(): React.Node {
+    const headerStore: any = this.props.mainStore.headerStore;
+    const footerStoreMode: string = this.props.mainStore.footerStore.state.activeMode;
+    let placeholder: string = footerStoreMode == "Add" ? "Add New Item" : "Search";
 
     return (
       <header id="header">

@@ -1,21 +1,25 @@
+//@flow
+
 import { observer } from "mobx-react";
 import * as React from "react";
 import { style } from "../style.js";
 import { Item } from "./Item.js";
+import type { object } from '../Stores/ItemsStore.js'
+
 
 const { ul } = style;
-
-// @flow
-//let x: number = 'k'
+type Props = {
+  mainStore: any,
+};
 
 @observer
-export class List extends React.Component {
+export class List extends React.Component<Props> {
   // условный рендер по актив кнопке
-  render() {
-    let collection = [];
-    let activeMode = this.props.mainStore.footerStore.state.activeMode;
-    let activeFilter = this.props.mainStore.footerStore.state.activeBehaviour;
-    let keyword = this.props.mainStore.headerStore.state.keyword;
+  render(): React.Node  {
+    let collection: Array<object> = [];
+    let activeMode: string = this.props.mainStore.footerStore.state.activeMode;
+    let activeFilter: string = this.props.mainStore.footerStore.state.activeBehaviour;
+    let keyword: string = this.props.mainStore.headerStore.state.keyword;
 
     if (activeFilter === "All")
       collection = this.props.mainStore.itemsStore.items;

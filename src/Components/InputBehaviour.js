@@ -1,12 +1,21 @@
-import React from "react";
+//@flow
+
+import * as React from 'react'
 import { style } from "../style.js";
 import { observer } from "mobx-react";
 
 const { bgColor, input } = style;
 
+type Props = { // дубль
+  id: string,
+  itemsStore: any,
+  behaviour: any,
+  changeBehaviour: void,
+};
+
 @observer
-export class InputBehaviour extends React.Component {
-  render() {
+export class InputBehaviour extends React.Component<Props> {
+  render(): React.Node  {
     return (
       <input
         type="button"

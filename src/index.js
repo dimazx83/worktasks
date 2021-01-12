@@ -1,3 +1,5 @@
+//@flow
+
 import * as React from "react";
 import { render } from "react-dom";
 import { MainComponent } from "./Components/MainComponent.js";

@@ -1,16 +1,17 @@
-import { observable, action, makeAutoObservable } from "mobx";
+//@flow
+import { makeAutoObservable } from "mobx";
 
 export class HeaderStore {
   constructor() {
     makeAutoObservable(this);
   }
 
-  state = {
+  state: { keyword: string, mode: string } = {
     keyword: "",
     mode: "add"
   };
 
-  enter(e, itemsStore, footerStoreMode) {
+  enter(e: SyntheticKeyboardEvent<>, itemsStore, footerStoreMode: string) {
     // передаём store каждый раз ?
     switch (e.key) {
       case "Enter":
@@ -33,7 +34,7 @@ export class HeaderStore {
     }
   }
 
-  addItem(title, itemsStore) {
+  addItem(title: string, itemsStore) {
     if (!this.validate(title)) {
       this.state.keyword = "";
       return false;
@@ -43,7 +44,7 @@ export class HeaderStore {
     }
   }
 
-  validate(str) {
-    return !str.trim() == "";
+  validate(str: string): boolean {
+    return !str.trim() === "";
   }
 }

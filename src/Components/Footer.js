@@ -1,17 +1,23 @@
-import React from "react";
+//@flow
+
+import * as React from 'react'
 import { style } from "../style.js";
 import { InputBehaviour } from "./InputBehaviour.js";
 import { observer } from "mobx-react";
 import { InputMode } from "./InputMode.js";
 
 const { flex, footer, input } = style;
-const inputsBehaviourData = ["All", "Active", "Completed"],
-  inputsModeData = ["Add", "Search"];
+const inputsBehaviourData: Array<string> = ["All", "Active", "Completed"],
+  inputsModeData: Array<string> = ["Add", "Search"];
+
+type Props = { // дубль
+  mainStore: any,
+};
 
 @observer
-export class Footer extends React.Component {
-  render() {
-    const footerCollection = this.props.mainStore.footerStore;
+export class Footer extends React.Component<Props> {
+  render(): React.Node {
+    const footerCollection: any = this.props.mainStore.footerStore;
 
     const modeInputs = inputsModeData.map((i) => (
       <InputMode
