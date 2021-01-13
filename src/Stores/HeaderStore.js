@@ -11,7 +11,7 @@ export class HeaderStore {
     mode: "add"
   };
 
-  enter(e: SyntheticKeyboardEvent<>, itemsStore, footerStoreMode: string) {
+  enter(e: SyntheticKeyboardEvent<>, itemsStore: any, footerStoreMode: string): void {
     // передаём store каждый раз ?
     switch (e.key) {
       case "Enter":
@@ -28,23 +28,24 @@ export class HeaderStore {
       case "Shift":
       case "Control":
       case "Delete":
+      case "Alt":
         break;
       default:
         this.state.keyword += e.key;
     }
   }
 
-  addItem(title: string, itemsStore) {
-    if (!this.validate(title)) {
+  addItem(title: string, itemsStore: any): void {
+    if (this.validateFalse(title)) {
       this.state.keyword = "";
-      return false;
+      console.log('Empty title!')
     } else {
       itemsStore.addItem(title);
       this.state.keyword = "";
     }
   }
 
-  validate(str: string): boolean {
-    return !str.trim() === "";
+  validateFalse(str: string): boolean {
+    return str.trim() == "";
   }
 }

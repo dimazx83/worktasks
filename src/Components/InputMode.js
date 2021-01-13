@@ -9,11 +9,17 @@ type Props = {
         itemsStore: any,
         headerStoreKeyword: any,
         mode: any,
-        changeMode: void
+        changeMode: (id: string) => void
 };
 
 @observer
 export class InputMode extends React.Component<Props> {
+
+  constructor(){
+    super()
+    //self = this;
+  }
+
   render(): React.Node {
     return (
       <input
@@ -29,7 +35,12 @@ export class InputMode extends React.Component<Props> {
     );
   }
 
-  click = () => {
+  /* click(): void{
+    self.props.changeMode(self.props.id);
+    self.props.headerStoreKeyword.state.keyword = "";
+  }
+ */
+  click = (): void => {
     this.props.changeMode(this.props.id);
     this.props.headerStoreKeyword.state.keyword = "";
   };

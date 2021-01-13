@@ -6,6 +6,6 @@ import { MainComponent } from "./Components/MainComponent.js";
 import { MainStore } from "./Stores/MainStore.js";
 
 render(
-  <MainComponent mainStore={new MainStore()} />,
+  <MainComponent mainStore={(new MainStore(): MainStore)} />,
   document.getElementById("root")
 );

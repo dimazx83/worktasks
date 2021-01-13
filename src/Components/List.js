@@ -37,6 +37,8 @@ export class List extends React.Component<Props> {
     localStorage.setItem(
       "todos",
       JSON.stringify(this.props.mainStore.itemsStore.items)
+    //this.props.mainStore.itemsStore.items
+
     );
 
     return (

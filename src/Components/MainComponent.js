@@ -6,7 +6,11 @@ import { style } from "../style.js";
 
 const { root } = style;
 
-export class MainComponent extends React.Component {
+type Props = {
+  mainStore: MainStore,
+};
+
+export class MainComponent extends React.Component<Props> {
   render() {
     return (
       <div id="root" style={root}>

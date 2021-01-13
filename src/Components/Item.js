@@ -12,7 +12,7 @@ type Props = {
 
 @observer
 export class Item extends React.Component<Props> {
-  toggle() {
+  toggle(): void {
     const item: object = this.props.item;
     item.complete = !item.complete;
   }

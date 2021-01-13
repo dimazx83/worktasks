@@ -12,12 +12,12 @@ export class FooterStore {
     activeBehaviour: "All"
   };
 
-  changeMode(id: string) {
+  changeMode(id: string): void {
     if (this.mode.state.activeMode === id) this.mode.state.activeMode = "none";
     else this.mode.state.activeMode = id;
   }
 
-  changeBehaviour(id: string) {
+  changeBehaviour(id: string): void {
     this.behaviour.state.activeBehaviour = id;
   }
 }

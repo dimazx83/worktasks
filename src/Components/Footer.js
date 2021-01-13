@@ -19,7 +19,7 @@ export class Footer extends React.Component<Props> {
   render(): React.Node {
     const footerCollection: any = this.props.mainStore.footerStore;
 
-    const modeInputs = inputsModeData.map((i) => (
+    const modeInputs: Array<React.Node> = inputsModeData.map((i) => (
       <InputMode
         key={i}
         id={i}
@@ -29,7 +29,7 @@ export class Footer extends React.Component<Props> {
         changeMode={footerCollection.changeMode}
       />
     ));
-    const behaviourInputs = inputsBehaviourData.map((i) => (
+    const behaviourInputs: Array<React.Node> = inputsBehaviourData.map((i) => (
       <InputBehaviour
         key={i}
         id={i}

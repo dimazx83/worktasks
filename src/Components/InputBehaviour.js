@@ -3,6 +3,8 @@
 import * as React from 'react'
 import { style } from "../style.js";
 import { observer } from "mobx-react";
+import type { object } from '../Stores/ItemsStore.js'
+
 
 const { bgColor, input } = style;
 
@@ -14,7 +16,7 @@ type Props = { // дубль
 };
 
 @observer
-export class InputBehaviour extends React.Component<Props> {
+export class InputBehaviour extends React.Component<Props> { // метод?
   render(): React.Node  {
     return (
       <input
@@ -30,7 +32,7 @@ export class InputBehaviour extends React.Component<Props> {
     );
   }
 
-  click = () => {
+  click = (): Array<object> => {
     this.props.changeBehaviour(this.props.id);
 
     if (this.props.id == "All") {
@@ -38,5 +40,5 @@ export class InputBehaviour extends React.Component<Props> {
     } else if (this.props.id == "Active") {
       return this.props.itemsStore.getRemainItems();
     } else return this.props.itemsStore.getCompletedItems();
-  };
+  }
 }
